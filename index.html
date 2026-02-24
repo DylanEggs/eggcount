@@ -1,839 +1,129 @@
 <!doctype html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Egg Count</title>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Egg Count (Shared)</title>
 
-  <!-- PWA -->
-  <link rel="manifest" href="manifest.json">
-  <meta name="theme-color" content="#7c5cff">
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#7c5cff">
 
-  <style>
-    :root{
-      --bg:#0b1020; --muted:#9fb0d0; --text:#eaf0ff;
-      --good:#2dd4bf; --bad:#fb7185;
-    }
-    *{box-sizing:border-box}
-    body{
-      margin:0; font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
-      background: radial-gradient(1200px 700px at 20% 0%, #15224a 0%, var(--bg) 55%);
-      color:var(--text);
-    }
-    .wrap{max-width:1100px; margin:0 auto; padding:22px}
-    h1{margin:0 0 10px; font-size:28px}
-    .sub{color:var(--muted); margin:0 0 18px}
-    .grid{display:grid; grid-template-columns: 1.15fr 1fr; gap:14px}
-    .card{
-      background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
-      border:1px solid rgba(255,255,255,.08);
-      border-radius:16px; padding:16px;
-      box-shadow: 0 14px 30px rgba(0,0,0,.25);
-    }
-    label{display:block; font-size:12px; color:var(--muted); margin:10px 0 6px}
-    input, select{
-      width:100%; padding:10px 12px; border-radius:12px; border:1px solid rgba(255,255,255,.12);
-      background: rgba(0,0,0,.18); color:var(--text); outline:none;
-      appearance: none;
-    }
-    input:focus, select:focus{border-color: rgba(124,92,255,.7); box-shadow: 0 0 0 3px rgba(124,92,255,.25)}
-    .row{display:grid; grid-template-columns: 1fr 1fr; gap:10px}
-    .btns{display:flex; gap:10px; flex-wrap:wrap; margin-top:12px}
-    button{
-      border:0; border-radius:12px; padding:10px 12px; cursor:pointer; color:var(--text);
-      background: rgba(124,92,255,.9);
-    }
-    button.secondary{background: rgba(255,255,255,.10)}
-    button.danger{background: rgba(251,113,133,.85)}
-    button:active{transform: translateY(1px)}
-    .kpis{display:grid; grid-template-columns: repeat(2, 1fr); gap:10px}
-    .kpi{border:1px solid rgba(255,255,255,.08); border-radius:14px; padding:12px; background: rgba(0,0,0,.12)}
-    .kpi .t{font-size:12px; color:var(--muted); margin-bottom:6px}
-    .kpi .v{font-size:22px; font-weight:700}
-    .kpi .s{font-size:12px; color:var(--muted); margin-top:4px}
-    .divider{height:1px; background: rgba(255,255,255,.10); margin:14px 0}
-    table{width:100%; border-collapse:collapse; font-size:14px}
-    th, td{padding:10px 8px; border-bottom:1px solid rgba(255,255,255,.08); text-align:left}
-    th{color:var(--muted); font-weight:600}
-    tr:hover td{background: rgba(255,255,255,.03)}
-    .pill{display:inline-block; padding:2px 8px; border-radius:999px; font-size:12px; border:1px solid rgba(255,255,255,.12); color:var(--muted)}
-    .small{font-size:12px; color:var(--muted)}
-    .foot{margin-top:12px; color:var(--muted); font-size:12px; line-height:1.4}
-    .rightTop{display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap}
-  </style>
+<style>
+body{margin:0;font-family:system-ui;background:#0b1020;color:#eaf0ff;padding:20px}
+.card{background:#121a35;padding:16px;border-radius:14px;margin-bottom:16px}
+input,select{width:100%;padding:8px;margin-top:4px;margin-bottom:10px;border-radius:8px;border:1px solid #333;background:#0f1733;color:#fff}
+button{padding:8px 12px;border-radius:8px;border:0;background:#7c5cff;color:#fff;cursor:pointer;margin-right:6px}
+button.danger{background:#e11d48}
+.kpi{margin-bottom:10px}
+.small{font-size:12px;color:#9fb0d0}
+</style>
 </head>
 
 <body>
-  <div class="wrap">
-    <h1>Egg Count</h1>
-    <p class="sub">
-      Log eggs + sales + who collected. Egg week/month/year are <span class="pill">projected</span> until you log 365 days.
-    </p>
 
-    <div class="grid">
-      <!-- Daily entry card -->
-      <div class="card">
-        <div class="rightTop">
-          <div>
-            <div class="small">Daily entry</div>
-            <div style="font-weight:700; font-size:18px;">Add eggs + sales</div>
-          </div>
-          <span class="pill" id="entryCountPill">0 entries</span>
-        </div>
+<h2>Egg Count (Shared)</h2>
 
-        <div class="divider"></div>
+<div class="card">
+<label>Date</label>
+<input type="date" id="date">
 
-        <div class="row" style="grid-template-columns: 1fr 1fr 1fr 1fr;">
-          <div>
-            <label for="hens">Current hens</label>
-            <input id="hens" type="number" min="0" step="1" placeholder="e.g., 12" />
-          </div>
-          <div>
-            <label for="roosters">Current roosters</label>
-            <input id="roosters" type="number" min="0" step="1" placeholder="e.g., 1" />
-          </div>
-          <div>
-            <label for="priceDozen">Price per dozen ($)</label>
-            <input id="priceDozen" type="number" min="0" step="0.01" placeholder="5.00" />
-          </div>
-          <div>
-            <label for="price18">Price per 18-pack ($)</label>
-            <input id="price18" type="number" min="0" step="0.01" placeholder="7.50" />
-          </div>
-        </div>
-        <div class="small" id="savedNote" style="margin-top:8px;"></div>
+<label>Collected by</label>
+<select id="collector">
+<option>Dylan</option>
+<option>Oma</option>
+<option>Ashley</option>
+</select>
 
-        <div class="divider"></div>
+<label>Eggs collected</label>
+<input type="number" id="eggs" min="0">
 
-        <div class="row" style="grid-template-columns: 1fr 1fr;">
-          <div>
-            <label for="date">Date</label>
-            <input id="date" type="date" />
-          </div>
-          <div>
-            <label for="collector">Collected by</label>
-            <select id="collector">
-              <option value="Dylan">Dylan</option>
-              <option value="Oma">Oma</option>
-              <option value="Ashley">Ashley</option>
-            </select>
-          </div>
-        </div>
+<label>Dozens sold</label>
+<input type="number" id="soldDozens" min="0">
 
-        <div class="row">
-          <div>
-            <label for="eggs">Eggs collected (today)</label>
-            <input id="eggs" type="number" min="0" step="1" placeholder="e.g., 12" />
-          </div>
-          <div>
-            <label for="soldDozens">Dozen cartons sold (today)</label>
-            <input id="soldDozens" type="number" min="0" step="0.25" placeholder="e.g., 2" />
-          </div>
-        </div>
+<label>18-packs sold</label>
+<input type="number" id="sold18" min="0">
 
-        <div class="row">
-          <div>
-            <label for="sold18">18-packs sold (today)</label>
-            <input id="sold18" type="number" min="0" step="1" placeholder="e.g., 1" />
-          </div>
-          <div></div>
-        </div>
+<button onclick="addEntry()">Add / Update Day</button>
+<button class="danger" onclick="wipeAll()">Wipe All Data</button>
+</div>
 
-        <div class="btns">
-          <button id="addBtn">Add / Update Day</button>
-          <button class="secondary" id="exportBtn">Export JSON</button>
-          <button class="secondary" id="importBtn">Import JSON</button>
-          <button class="danger" id="wipeBtn">Wipe All Data</button>
-        </div>
+<div class="card">
+<div class="kpi"><b>Total eggs (365 days):</b> <span id="eggs365">0</span></div>
+<div class="kpi"><b>Projected per week:</b> <span id="week">0</span></div>
+<div class="kpi"><b>Projected per month:</b> <span id="month">0</span></div>
+<div class="kpi"><b>Projected per year:</b> <span id="year">0</span></div>
+</div>
 
-        <div class="foot">
-          Tip: “Add / Update Day” overwrites the same date if you re-enter it.
-          <br/>Hens/Roosters/Prices save automatically as you type.
-        </div>
-      </div>
-
-      <!-- Stats card -->
-      <div class="card">
-        <div class="rightTop">
-          <div>
-            <div class="small">Stats</div>
-            <div style="font-weight:700; font-size:18px;">Production + sales</div>
-          </div>
-          <span class="pill" id="asOfPill">as of —</span>
-        </div>
-
-        <div class="divider"></div>
-
-        <div class="kpis">
-          <div class="kpi">
-            <div class="t">Total eggs (last 365 days)</div>
-            <div class="v" id="eggs365">0</div>
-            <div class="s" id="daysCovered">0 days logged in window</div>
-          </div>
-
-          <div class="kpi">
-            <div class="t" id="eggsWeekTitle">Projected eggs per week</div>
-            <div class="v" id="eggsWeek">0</div>
-            <div class="s" id="eggAvgSub">—</div>
-          </div>
-
-          <div class="kpi">
-            <div class="t" id="eggsMonthTitle">Projected eggs per month</div>
-            <div class="v" id="eggsMonth">0</div>
-            <div class="s" id="eggsMonthSub">—</div>
-          </div>
-
-          <div class="kpi">
-            <div class="t" id="eggsYearTitle">Projected eggs per year</div>
-            <div class="v" id="eggsYear">0</div>
-            <div class="s" id="eggsYearSub">—</div>
-          </div>
-
-          <div class="kpi">
-            <div class="t">Total eggs (last 7 days)</div>
-            <div class="v" id="eggs7">0</div>
-            <div class="s">Quick view</div>
-          </div>
-
-          <div class="kpi">
-            <div class="t">Total eggs (last 30 days)</div>
-            <div class="v" id="eggs30">0</div>
-            <div class="s">Quick view</div>
-          </div>
-
-          <div class="kpi">
-            <div class="t">Dozens sold (last 7 days)</div>
-            <div class="v" id="sold7">0</div>
-            <div class="s">Actual sales entered</div>
-          </div>
-
-          <div class="kpi">
-            <div class="t">Revenue from dozens (last 7 days)</div>
-            <div class="v" id="rev7">$0.00</div>
-            <div class="s">Dozens × price</div>
-          </div>
-
-          <div class="kpi">
-            <div class="t">18-packs sold (last 7 days)</div>
-            <div class="v" id="sold18_7">0</div>
-            <div class="s">Actual sales entered</div>
-          </div>
-
-          <div class="kpi">
-            <div class="t">Revenue from 18-packs (last 7 days)</div>
-            <div class="v" id="rev18_7">$0.00</div>
-            <div class="s">18-packs × price</div>
-          </div>
-
-          <div class="kpi">
-            <div class="t">Dozens sold (last 30 days)</div>
-            <div class="v" id="sold30">0</div>
-            <div class="s">Actual sales entered</div>
-          </div>
-
-          <div class="kpi">
-            <div class="t">Revenue from dozens (last 30 days)</div>
-            <div class="v" id="rev30">$0.00</div>
-            <div class="s">Dozens × price</div>
-          </div>
-
-          <div class="kpi">
-            <div class="t">18-packs sold (last 30 days)</div>
-            <div class="v" id="sold18_30">0</div>
-            <div class="s">Actual sales entered</div>
-          </div>
-
-          <div class="kpi">
-            <div class="t">Revenue from 18-packs (last 30 days)</div>
-            <div class="v" id="rev18_30">$0.00</div>
-            <div class="s">18-packs × price</div>
-          </div>
-
-          <div class="kpi">
-            <div class="t">Dozens sold (last 365 days)</div>
-            <div class="v" id="sold365">0</div>
-            <div class="s">Actual sales entered</div>
-          </div>
-
-          <div class="kpi">
-            <div class="t">Revenue from dozens (last 365 days)</div>
-            <div class="v" id="rev365">$0.00</div>
-            <div class="s" id="rev365Sub">At $0.00 / dozen</div>
-          </div>
-
-          <div class="kpi">
-            <div class="t">18-packs sold (last 365 days)</div>
-            <div class="v" id="sold18_365">0</div>
-            <div class="s">Actual sales entered</div>
-          </div>
-
-          <div class="kpi">
-            <div class="t">Revenue from 18-packs (last 365 days)</div>
-            <div class="v" id="rev18_365">$0.00</div>
-            <div class="s" id="rev18_365Sub">At $0.00 / 18-pack</div>
-          </div>
-        </div>
-
-        <div class="divider"></div>
-        <div class="small" id="noteBox">—</div>
-      </div>
-    </div>
-
-    <!-- Table -->
-    <div class="card" style="margin-top:14px;">
-      <div class="rightTop">
-        <div>
-          <div class="small">Your log</div>
-          <div style="font-weight:700; font-size:18px;">Entries</div>
-        </div>
-        <span class="pill">Most recent first</span>
-      </div>
-      <div class="divider"></div>
-      <div style="overflow:auto;">
-        <table>
-          <thead>
-            <tr>
-              <th style="min-width:140px;">Date</th>
-              <th style="min-width:140px;">Collector</th>
-              <th style="min-width:120px;">Eggs</th>
-              <th style="min-width:160px;">Dozens sold</th>
-              <th style="min-width:170px;">18-packs sold</th>
-              <th style="min-width:140px;">In rolling 365?</th>
-              <th style="min-width:120px;">Actions</th>
-            </tr>
-          </thead>
-          <tbody id="tbody"></tbody>
-        </table>
-      </div>
-      <div class="foot">
-        Data is stored in this browser (local storage). Export/Import if you switch devices.
-      </div>
-    </div>
-  </div>
+<div class="card">
+<h3>Entries</h3>
+<div id="list"></div>
+</div>
 
 <script>
-(() => {
-  // Current entry key (includes: eggs, soldDozens, sold18, collector)
-  const ENTRY_KEY_V5 = "egg_count_entries_v5";
-
-  // Older keys we can migrate from (if present)
-  const ENTRY_KEY_V4 = "egg_count_entries_v4"; // eggs + soldDozens + collector
-  const ENTRY_KEY_V3 = "egg_count_entries_v3"; // eggs + soldDozens (no collector)
-  const ENTRY_KEY_V2 = "egg_count_entries_v2"; // eggs only
-  const ENTRY_KEY_V1 = "egg_count_entries_v1"; // eggs only
-
-  const FLOCK_KEY   = "egg_count_flock_v1";
-  const PRICE_DOZEN_KEY = "egg_count_price_per_dozen_v1";
-  const PRICE_18_KEY    = "egg_count_price_per_18pack_v1";
-
-  function loadJSON(key) {
-    try { return JSON.parse(localStorage.getItem(key) || "null"); }
-    catch { return null; }
-  }
-
-  function normalizeEntry(x) {
-    if (!x || typeof x !== "object" || typeof x.dateISO !== "string") return null;
-    const dateISO = String(x.dateISO).slice(0,10);
-    if (dateISO.length !== 10) return null;
-
-    const eggs = Math.max(0, Math.floor(Number(x.eggs ?? 0)));
-    const soldDozens = Math.max(0, Number(x.soldDozens ?? 0));
-    const sold18 = Math.max(0, Math.floor(Number(x.sold18 ?? 0)));
-
-    const cRaw = String(x.collector ?? "Dylan");
-    const collector = (cRaw === "Dylan" || cRaw === "Oma" || cRaw === "Ashley") ? cRaw : "Dylan";
-
-    return { dateISO, eggs, soldDozens, sold18, collector };
-  }
-
-  function saveEntries(entries) {
-    localStorage.setItem(ENTRY_KEY_V5, JSON.stringify(entries));
-  }
-
-  function migrateIfNeeded() {
-    const existing = loadJSON(ENTRY_KEY_V5);
-    if (Array.isArray(existing)) return;
-
-    const v4 = loadJSON(ENTRY_KEY_V4);
-    if (Array.isArray(v4)) {
-      saveEntries(v4.map(e => normalizeEntry({ ...e, sold18: 0 })).filter(Boolean));
-      return;
-    }
-
-    const v3 = loadJSON(ENTRY_KEY_V3);
-    if (Array.isArray(v3)) {
-      saveEntries(v3.map(e => normalizeEntry({ ...e, collector: "Dylan", sold18: 0 })).filter(Boolean));
-      return;
-    }
-
-    const v2 = loadJSON(ENTRY_KEY_V2);
-    const v1 = loadJSON(ENTRY_KEY_V1);
-    const src = Array.isArray(v2) ? v2 : (Array.isArray(v1) ? v1 : null);
-    if (src) {
-      saveEntries(
-        src
-          .filter(x => x && typeof x.dateISO === "string")
-          .map(x => normalizeEntry({ dateISO: x.dateISO, eggs: x.eggs ?? 0, soldDozens: 0, sold18: 0, collector: "Dylan" }))
-          .filter(Boolean)
-      );
-    }
-  }
-
-  function loadEntries() {
-    migrateIfNeeded();
-    const raw = loadJSON(ENTRY_KEY_V5);
-    if (!Array.isArray(raw)) return [];
-    const cleaned = raw.map(normalizeEntry).filter(Boolean);
-    const map = new Map();
-    for (const e of cleaned) map.set(e.dateISO, e);
-    return [...map.values()].sort((a,b) => a.dateISO.localeCompare(b.dateISO));
-  }
-
-  function loadFlock() {
-    const p = loadJSON(FLOCK_KEY);
-    return {
-      hens: Math.max(0, Math.floor(Number(p?.hens ?? 0))),
-      roosters: Math.max(0, Math.floor(Number(p?.roosters ?? 0))),
-    };
-  }
-  function saveFlock(flock) {
-    localStorage.setItem(FLOCK_KEY, JSON.stringify({
-      hens: Math.max(0, Math.floor(Number(flock.hens ?? 0))),
-      roosters: Math.max(0, Math.floor(Number(flock.roosters ?? 0))),
-      savedAt: Date.now()
-    }));
-  }
-
-  function loadPriceDozen() {
-    const v = Number(localStorage.getItem(PRICE_DOZEN_KEY));
-    return Number.isFinite(v) && v >= 0 ? v : 5;
-  }
-  function savePriceDozen(v) {
-    const n = Number(v);
-    localStorage.setItem(PRICE_DOZEN_KEY, String(Number.isFinite(n) && n >= 0 ? n : 5));
-  }
-
-  function loadPrice18() {
-    const v = Number(localStorage.getItem(PRICE_18_KEY));
-    return Number.isFinite(v) && v >= 0 ? v : 0;
-  }
-  function savePrice18(v) {
-    const n = Number(v);
-    localStorage.setItem(PRICE_18_KEY, String(Number.isFinite(n) && n >= 0 ? n : 0));
-  }
-
-  function isoToday() {
-    const d = new Date();
-    const tzOff = d.getTimezoneOffset() * 60000;
-    return new Date(d.getTime() - tzOff).toISOString().slice(0,10);
-  }
-  function parseISOToUTCDate(iso) {
-    const [y,m,dd] = iso.split("-").map(Number);
-    return new Date(Date.UTC(y, m-1, dd));
-  }
-  function addDaysUTC(dateUTC, days) {
-    const d = new Date(dateUTC.getTime());
-    d.setUTCDate(d.getUTCDate() + days);
-    return d;
-  }
-  function inRangeUTC(dateUTC, startUTC, endUTCInclusive) {
-    return dateUTC.getTime() >= startUTC.getTime() && dateUTC.getTime() <= endUTCInclusive.getTime();
-  }
-  function formatNumber(n) {
-    return new Intl.NumberFormat(undefined, { maximumFractionDigits: 2 }).format(n);
-  }
-  function formatUSD(n) {
-    return n.toLocaleString(undefined, { style: "currency", currency: "USD" });
-  }
-
-  const els = {
-    hens: document.getElementById("hens"),
-    roosters: document.getElementById("roosters"),
-    priceDozen: document.getElementById("priceDozen"),
-    price18: document.getElementById("price18"),
-    savedNote: document.getElementById("savedNote"),
-
-    date: document.getElementById("date"),
-    collector: document.getElementById("collector"),
-    eggs: document.getElementById("eggs"),
-    soldDozens: document.getElementById("soldDozens"),
-    sold18: document.getElementById("sold18"),
-
-    addBtn: document.getElementById("addBtn"),
-    exportBtn: document.getElementById("exportBtn"),
-    importBtn: document.getElementById("importBtn"),
-    wipeBtn: document.getElementById("wipeBtn"),
-
-    entryCountPill: document.getElementById("entryCountPill"),
-    asOfPill: document.getElementById("asOfPill"),
-
-    eggs365: document.getElementById("eggs365"),
-    eggs7: document.getElementById("eggs7"),
-    eggs30: document.getElementById("eggs30"),
-    daysCovered: document.getElementById("daysCovered"),
-
-    eggsWeekTitle: document.getElementById("eggsWeekTitle"),
-    eggsMonthTitle: document.getElementById("eggsMonthTitle"),
-    eggsYearTitle: document.getElementById("eggsYearTitle"),
-    eggsWeek: document.getElementById("eggsWeek"),
-    eggsMonth: document.getElementById("eggsMonth"),
-    eggsYear: document.getElementById("eggsYear"),
-    eggAvgSub: document.getElementById("eggAvgSub"),
-    eggsMonthSub: document.getElementById("eggsMonthSub"),
-    eggsYearSub: document.getElementById("eggsYearSub"),
-
-    sold7: document.getElementById("sold7"),
-    sold30: document.getElementById("sold30"),
-    sold365: document.getElementById("sold365"),
-    rev7: document.getElementById("rev7"),
-    rev30: document.getElementById("rev30"),
-    rev365: document.getElementById("rev365"),
-    rev365Sub: document.getElementById("rev365Sub"),
-
-    sold18_7: document.getElementById("sold18_7"),
-    sold18_30: document.getElementById("sold18_30"),
-    sold18_365: document.getElementById("sold18_365"),
-    rev18_7: document.getElementById("rev18_7"),
-    rev18_30: document.getElementById("rev18_30"),
-    rev18_365: document.getElementById("rev18_365"),
-    rev18_365Sub: document.getElementById("rev18_365Sub"),
-
-    noteBox: document.getElementById("noteBox"),
-    tbody: document.getElementById("tbody"),
-  };
-
-  let entries = loadEntries();
-
-  function upsertEntry(dateISO, collector, eggs, soldDozens, sold18) {
-    dateISO = String(dateISO).slice(0,10);
-    const e = Math.max(0, Math.floor(Number(eggs ?? 0)));
-    const d = Math.max(0, Number(soldDozens ?? 0));
-    const p18 = Math.max(0, Math.floor(Number(sold18 ?? 0)));
-    const c = (collector === "Dylan" || collector === "Oma" || collector === "Ashley") ? collector : "Dylan";
-
-    const map = new Map(entries.map(x => [x.dateISO, x]));
-    map.set(dateISO, { dateISO, eggs: e, soldDozens: d, sold18: p18, collector: c });
-    entries = [...map.values()].sort((a,b) => a.dateISO.localeCompare(b.dateISO));
-    saveEntries(entries);
-  }
-
-  function removeEntry(dateISO) {
-    entries = entries.filter(e => e.dateISO !== dateISO);
-    saveEntries(entries);
-  }
-
-  function getWindow(endISO, daysBack) {
-    const endUTC = parseISOToUTCDate(endISO);
-    const startUTC = addDaysUTC(endUTC, -(daysBack - 1));
-    return { startUTC, endUTC };
-  }
-
-  function summarize(window) {
-    let eggsTotal = 0;
-    let soldDozensTotal = 0;
-    let sold18Total = 0;
-    let daysWithEntries = 0;
-
-    for (const e of entries) {
-      const dUTC = parseISOToUTCDate(e.dateISO);
-      if (inRangeUTC(dUTC, window.startUTC, window.endUTC)) {
-        eggsTotal += e.eggs;
-        soldDozensTotal += e.soldDozens;
-        sold18Total += e.sold18;
-        daysWithEntries += 1;
-      }
-    }
-    return { eggsTotal, soldDozensTotal, sold18Total, daysWithEntries };
-  }
-
-  function updateSavedNote() {
-    const hens = Math.max(0, Math.floor(Number(els.hens.value || 0)));
-    const roosters = Math.max(0, Math.floor(Number(els.roosters.value || 0)));
-    const priceDz = Math.max(0, Number(els.priceDozen.value || 0));
-    const price18 = Math.max(0, Number(els.price18.value || 0));
-    els.savedNote.textContent = `Saved: ${hens} hen(s), ${roosters} rooster(s), ${formatUSD(priceDz)}/dozen, ${formatUSD(price18)}/18-pack`;
-  }
-
-  function render() {
-    const today = isoToday();
-    els.asOfPill.textContent = `as of ${today}`;
-
-    const w365 = getWindow(today, 365);
-    const w30  = getWindow(today, 30);
-    const w7   = getWindow(today, 7);
-
-    const s365 = summarize(w365);
-    const s30  = summarize(w30);
-    const s7   = summarize(w7);
-
-    const eggs365 = s365.eggsTotal;
-    const loggedDays = s365.daysWithEntries;
-
-    // Egg projection (until you have 365 logged days in window)
-    const hasFullYearOfLoggedDays = loggedDays >= 365;
-    const denomDays = hasFullYearOfLoggedDays ? 365 : Math.max(1, loggedDays);
-    const dailyEggRate = eggs365 / denomDays;
-
-    const eggsWeek = dailyEggRate * 7;
-    const eggsMonth = dailyEggRate * (365 / 12); // ~30.42 days
-    const eggsYear = dailyEggRate * 365;
-
-    els.eggs365.textContent = formatNumber(eggs365);
-    els.eggs7.textContent = formatNumber(s7.eggsTotal);
-    els.eggs30.textContent = formatNumber(s30.eggsTotal);
-    els.daysCovered.textContent = `${loggedDays} days logged in window`;
-
-    els.eggsWeek.textContent = formatNumber(eggsWeek);
-    els.eggsMonth.textContent = formatNumber(eggsMonth);
-    els.eggsYear.textContent = formatNumber(eggsYear);
-
-    if (hasFullYearOfLoggedDays) {
-      els.eggsWeekTitle.textContent = "Eggs per week (rolling avg)";
-      els.eggsMonthTitle.textContent = "Eggs per month (rolling avg)";
-      els.eggsYearTitle.textContent = "Eggs per year (rolling avg)";
-      els.eggAvgSub.textContent = "Based on last 365 days";
-      els.eggsMonthSub.textContent = "Based on last 365 days";
-      els.eggsYearSub.textContent = "Based on last 365 days";
-      els.noteBox.innerHTML = `You’ve logged <b>365+ days</b> in the rolling window, so egg averages are true rolling averages.`;
-    } else {
-      els.eggsWeekTitle.textContent = "Projected eggs per week";
-      els.eggsMonthTitle.textContent = "Projected eggs per month";
-      els.eggsYearTitle.textContent = "Projected eggs per year";
-      els.eggAvgSub.textContent = `Projection: total ÷ ${denomDays} logged day(s) × 7`;
-      els.eggsMonthSub.textContent = `Projection: total ÷ ${denomDays} logged day(s) × 30.4`;
-      els.eggsYearSub.textContent = `Projection: total ÷ ${denomDays} logged day(s) × 365`;
-      els.noteBox.innerHTML = `Egg week/month/year numbers are <b>projections</b> until you have 365 logged days.`;
-    }
-
-    // Sales + revenue
-    const priceDz = loadPriceDozen();
-    const price18 = loadPrice18();
-
-    els.sold7.textContent   = formatNumber(s7.soldDozensTotal);
-    els.sold30.textContent  = formatNumber(s30.soldDozensTotal);
-    els.sold365.textContent = formatNumber(s365.soldDozensTotal);
-
-    els.rev7.textContent    = formatUSD(s7.soldDozensTotal * priceDz);
-    els.rev30.textContent   = formatUSD(s30.soldDozensTotal * priceDz);
-    els.rev365.textContent  = formatUSD(s365.soldDozensTotal * priceDz);
-    els.rev365Sub.textContent = `At ${formatUSD(priceDz)} / dozen`;
-
-    els.sold18_7.textContent   = formatNumber(s7.sold18Total);
-    els.sold18_30.textContent  = formatNumber(s30.sold18Total);
-    els.sold18_365.textContent = formatNumber(s365.sold18Total);
-
-    els.rev18_7.textContent    = formatUSD(s7.sold18Total * price18);
-    els.rev18_30.textContent   = formatUSD(s30.sold18Total * price18);
-    els.rev18_365.textContent  = formatUSD(s365.sold18Total * price18);
-    els.rev18_365Sub.textContent = `At ${formatUSD(price18)} / 18-pack`;
-
-    // Count
-    els.entryCountPill.textContent = `${entries.length} entr${entries.length === 1 ? "y" : "ies"}`;
-
-    // Table
-    const rows = [...entries].sort((a,b) => b.dateISO.localeCompare(a.dateISO));
-    els.tbody.innerHTML = "";
-    for (const e of rows) {
-      const dUTC = parseISOToUTCDate(e.dateISO);
-      const in365 = inRangeUTC(dUTC, w365.startUTC, w365.endUTC);
-
-      const tr = document.createElement("tr");
-
-      const tdDate = document.createElement("td");
-      tdDate.textContent = e.dateISO;
-
-      const tdCollector = document.createElement("td");
-      tdCollector.textContent = e.collector;
-
-      const tdEggs = document.createElement("td");
-      tdEggs.textContent = String(e.eggs);
-
-      const tdSold = document.createElement("td");
-      tdSold.textContent = formatNumber(e.soldDozens);
-
-      const tdSold18 = document.createElement("td");
-      tdSold18.textContent = formatNumber(e.sold18);
-
-      const tdIn = document.createElement("td");
-      tdIn.innerHTML = in365
-        ? `<span class="pill" style="color: var(--good); border-color: rgba(45,212,191,.35)">Yes</span>`
-        : `<span class="pill" style="color: var(--muted); border-color: rgba(255,255,255,.12)">No</span>`;
-
-      const tdAct = document.createElement("td");
-      const del = document.createElement("button");
-      del.className = "secondary";
-      del.textContent = "Delete";
-      del.onclick = () => { removeEntry(e.dateISO); render(); };
-      tdAct.appendChild(del);
-
-      tr.appendChild(tdDate);
-      tr.appendChild(tdCollector);
-      tr.appendChild(tdEggs);
-      tr.appendChild(tdSold);
-      tr.appendChild(tdSold18);
-      tr.appendChild(tdIn);
-      tr.appendChild(tdAct);
-
-      els.tbody.appendChild(tr);
-    }
-  }
-
-  // Init inputs
-  els.date.value = isoToday();
-
-  const flock = loadFlock();
-  els.hens.value = String(flock.hens ?? 0);
-  els.roosters.value = String(flock.roosters ?? 0);
-  els.priceDozen.value = loadPriceDozen().toFixed(2);
-  els.price18.value = loadPrice18().toFixed(2);
-
-  function saveSettings() {
-    saveFlock({
-      hens: Math.max(0, Math.floor(Number(els.hens.value || 0))),
-      roosters: Math.max(0, Math.floor(Number(els.roosters.value || 0))),
-    });
-    savePriceDozen(els.priceDozen.value);
-    savePrice18(els.price18.value);
-    updateSavedNote();
-    render();
-  }
-  els.hens.addEventListener("input", saveSettings);
-  els.roosters.addEventListener("input", saveSettings);
-  els.priceDozen.addEventListener("input", saveSettings);
-  els.price18.addEventListener("input", saveSettings);
-
-  // Add/update entry
-  els.addBtn.addEventListener("click", () => {
-    const dateISO = els.date.value || isoToday();
-    const collector = els.collector.value;
-
-    const eggsVal = els.eggs.value === "" ? 0 : Number(els.eggs.value);
-    const soldDzVal = els.soldDozens.value === "" ? 0 : Number(els.soldDozens.value);
-    const sold18Val = els.sold18.value === "" ? 0 : Number(els.sold18.value);
-
-    if (eggsVal < 0 || soldDzVal < 0 || sold18Val < 0) {
-      alert("Please enter non-negative numbers.");
-      return;
-    }
-
-    upsertEntry(dateISO, collector, eggsVal, soldDzVal, sold18Val);
-
-    els.eggs.value = "";
-    els.soldDozens.value = "";
-    els.sold18.value = "";
-    render();
-  });
-
-  // Export/import
-  els.exportBtn.addEventListener("click", () => {
-    const payload = {
-      flock: loadFlock(),
-      pricePerDozen: loadPriceDozen(),
-      pricePer18Pack: loadPrice18(),
-      entries
-    };
-    const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = "egg-count-export.json";
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
-    URL.revokeObjectURL(url);
-  });
-
-  els.importBtn.addEventListener("click", () => {
-    const inp = document.createElement("input");
-    inp.type = "file";
-    inp.accept = "application/json";
-    inp.onchange = async () => {
-      const file = inp.files?.[0];
-      if (!file) return;
-      const text = await file.text();
-      let incoming;
-      try { incoming = JSON.parse(text); }
-      catch { alert("That file isn't valid JSON."); return; }
-
-      let incomingEntries = incoming;
-      if (incoming && typeof incoming === "object" && !Array.isArray(incoming) && Array.isArray(incoming.entries)) {
-        incomingEntries = incoming.entries;
-      }
-      if (!Array.isArray(incomingEntries)) {
-        alert("Import file should be an object with {entries} or an array of entries.");
-        return;
-      }
-
-      const cleaned = incomingEntries.map(normalizeEntry).filter(Boolean);
-
-      const map = new Map(entries.map(e => [e.dateISO, e]));
-      for (const e of cleaned) map.set(e.dateISO, e);
-      entries = [...map.values()].sort((a,b) => a.dateISO.localeCompare(b.dateISO));
-      saveEntries(entries);
-
-      if (incoming && typeof incoming === "object" && !Array.isArray(incoming)) {
-        if (incoming.flock) {
-          saveFlock({
-            hens: Math.max(0, Math.floor(Number(incoming.flock.hens ?? 0))),
-            roosters: Math.max(0, Math.floor(Number(incoming.flock.roosters ?? 0))),
-          });
-          const f = loadFlock();
-          els.hens.value = String(f.hens);
-          els.roosters.value = String(f.roosters);
-        }
-        if (incoming.pricePerDozen !== undefined) {
-          savePriceDozen(incoming.pricePerDozen);
-          els.priceDozen.value = loadPriceDozen().toFixed(2);
-        }
-        if (incoming.pricePer18Pack !== undefined) {
-          savePrice18(incoming.pricePer18Pack);
-          els.price18.value = loadPrice18().toFixed(2);
-        }
-      }
-
-      updateSavedNote();
-      render();
-      alert("Import complete.");
-    };
-    inp.click();
-  });
-
-  // Safer wipe: requires typing "WIPE"
-  els.wipeBtn.addEventListener("click", () => {
-    const msg =
-      "This will DELETE ALL data on this device (eggs, sales, settings).\n\n" +
-      "To confirm, type: WIPE\n\n" +
-      "Anything else cancels.";
-    const typed = prompt(msg, "");
-    if (typed !== "WIPE") return;
-
-    entries = [];
-    saveEntries(entries);
-
-    saveFlock({ hens: 0, roosters: 0 });
-    savePriceDozen(5);
-    savePrice18(0);
-
-    els.hens.value = "0";
-    els.roosters.value = "0";
-    els.priceDozen.value = "5.00";
-    els.price18.value = "0.00";
-
-    updateSavedNote();
-    render();
-  });
-
-  // First paint
-  updateSavedNote();
-  render();
-})();
+const API_URL="https://script.google.com/macros/s/AKfycbxL-mOn9qYXGNNUpvcyPqWJUI61PJdE92HR-A6nw0lMSd60WIQcckQsrQWte8euBXZM/exec";
+const API_KEY="DylanEggsFamily-9482";
+
+function todayISO(){return new Date().toISOString().slice(0,10)}
+document.getElementById("date").value=todayISO()
+
+async function api(action,data={}){
+data.action=action
+data.key=API_KEY
+const res=await fetch(API_URL,{method:"POST",body:JSON.stringify(data)})
+return await res.json()
+}
+
+async function loadData(){
+const res=await fetch(API_URL+"?action=getall&key="+API_KEY)
+const json=await res.json()
+if(!json.ok)return
+render(json.data.entries)
+}
+
+async function addEntry(){
+await api("upsertentry",{entry:{
+dateISO:document.getElementById("date").value,
+collector:document.getElementById("collector").value,
+eggs:Number(document.getElementById("eggs").value||0),
+soldDozens:Number(document.getElementById("soldDozens").value||0),
+sold18:Number(document.getElementById("sold18").value||0)
+}})
+loadData()
+}
+
+async function wipeAll(){
+const confirmText=prompt("Type WIPE to confirm deleting ALL shared data")
+if(confirmText!=="WIPE")return
+await api("wipeall",{confirm:"WIPE"})
+loadData()
+}
+
+function render(entries){
+let total=0
+let html=""
+entries.sort((a,b)=>b.dateISO.localeCompare(a.dateISO))
+entries.forEach(e=>{
+total+=e.eggs
+html+=`<div>${e.dateISO} - ${e.collector} - ${e.eggs} eggs</div>`
+})
+document.getElementById("list").innerHTML=html
+
+let days=Math.max(1,entries.length)
+let avg=total/days
+document.getElementById("eggs365").innerText=total
+document.getElementById("week").innerText=Math.round(avg*7)
+document.getElementById("month").innerText=Math.round(avg*30.4)
+document.getElementById("year").innerText=Math.round(avg*365)
+}
+
+loadData()
+setInterval(loadData,20000)
 </script>
 
-<!-- Service worker registration (PWA) -->
 <script>
-  if ("serviceWorker" in navigator) {
-    navigator.serviceWorker.register("./sw.js");
-  }
+if("serviceWorker" in navigator){
+navigator.serviceWorker.register("./sw.js")
+}
 </script>
 
 </body>
