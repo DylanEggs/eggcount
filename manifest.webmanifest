@@ -1,0 +1,11 @@
+{
+  "name": "Egg Count (Shared)",
+  "short_name": "Egg Count",
+  "start_url": "/eggcount/",
+  "scope": "/eggcount/",
+  "display": "standalone",
+  "background_color": "#0b1020",
+  "theme_color": "#0b1020",
+  "description": "Shared egg log for Dylan / Oma / Ashley.",
+  "icons": []
+}
