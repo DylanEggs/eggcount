@@ -559,6 +559,17 @@
         try {
           await apiPost("deleteentry", { dateISO: e.dateISO });
           await syncNow();
+          
+  const ok = confirm(`Delete the entry for ${dateISO}?\n\nThis cannot be undone.`);
+  if(!ok) return;
+
+  try{
+    await apiPost("deleteEntry", { dateISO });
+    await syncNow();
+  } catch (e){
+    alert("Delete failed: " + (e?.message || e));
+  }
+}
         } catch (err) {
           alert("Delete failed:\n" + err.message);
         }
