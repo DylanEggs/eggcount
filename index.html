@@ -595,6 +595,8 @@ VERSION: 999
       const data = await apiGetAll();
       entries = Array.isArray(data.entries) ? data.entries : [];
       settings = data.settings || settings;
+      // 👇 make syncNow available to the HTML button
+window.syncNow = syncNow;
 
       // normalize settings
       settings.hens = Number(settings.hens || 0);
