@@ -181,7 +181,7 @@
     </div>
 
     <div class="small mono" style="margin-top:12px">
-      VERSION: 9001
+      VERSION: 9002
     </div>
   </div>
 
@@ -225,46 +225,10 @@ function setSync(kind, msg){
   pill.textContent = "Sync: " + msg;
 }
 
-/*** API calls ***/
-async function apiGetAll(){
-  const url = `${API_URL}?action=getall&key=${encodeURIComponent(API_KEY)}&t=${Date.now()}`;
-const res = await fetch(API_URL, {
-  method: "POST",
-  mode: "cors",
-  credentials: "omit",
-  headers: { "Content-Type": "text/plain;charset=utf-8" },
-  body: JSON.stringify({
-    action: "getall",
-    key: API_KEY
-  })
-});
-
-const text = await res.text();
-console.log("GETALL raw response:", text);
-
-let data;
-try {
-  data = JSON.parse(text);
-} catch {
-  throw new Error("Non-JSON from server");
-}
-
-if (!data.ok) throw new Error(data.error || "Server error");
-
-// IMPORTANT: your backend returns { ok:true, entries:[...] }
-return data.entries;
-  const txt = await res.text();
-console.log("GETALL raw response:", txt);
-const data = JSON.parse(txt);
-  const text = await res.text();
-  let json;
-  try { json = JSON.parse(text); } catch { throw new Error("Non-JSON from server"); }
-  if(!json.ok) throw new Error(json.error || "Server error");
-  return json.data;
-}
-
+/*** API calls (POST only) ***/
 async function apiPost(action, payload){
-  const body = { action, key: API_KEY, ...payload };
+  const body = { action, key: API_KEY, ...(payload || {}) };
+
   const res = await fetch(API_URL, {
     method:"POST",
     mode:"cors",
@@ -274,38 +238,38 @@ async function apiPost(action, payload){
     cache:"no-store",
     redirect:"follow",
   });
-  const text = await res.text();
-console.log("SERVER RAW:", text);
 
-let data;
-try {
-  data = JSON.parse(text);
-} catch (err) {
-  alert("Server did not return JSON.");
-  throw err;
+  const text = await res.text();
+  console.log("POST raw response:", text);
+
+  let data;
+  try { data = JSON.parse(text); }
+  catch { throw new Error("Non-JSON from server"); }
+
+  if (!data.ok) throw new Error(data.error || "Server error");
+  return data;
 }
 
-if (!data || !data.entries) {
-  alert("Server response missing entries.");
-  console.log("Parsed:", data);
-  return;
-}
-  const text = await res.text();
-  let json;
-  try { json = JSON.parse(text); } catch { throw new Error("Non-JSON from server"); }
-  if(!json.ok) throw new Error(json.error || "Server error");
-  return json;
+async function apiGetAll(){
+  return apiPost("getall", {});
 }
 
 /*** render ***/
 function renderAll(){
-  // table
   const tbody = $("tbody");
   tbody.innerHTML = "";
-  const sorted = [...entries].sort((a,b)=>String(b.dateISO).localeCompare(String(a.dateISO)));
+
+  const sorted = [...entries].sort((a,b)=>String(b.date||"").localeCompare(String(a.date||"")));
+
   for(const e of sorted){
     const tr = document.createElement("tr");
-    tr.innerHTML = `<td>${e.dateISO||""}</td><td>${e.collector||""}</td><td>${clamp0(e.eggs)}</td><td>${clamp0(e.soldDozens)}</td><td>${clamp0(e.sold18)}</td>`;
+    tr.innerHTML = `
+      <td>${e.date||""}</td>
+      <td>${e.collectedBy||""}</td>
+      <td>${clamp0(e.eggs)}</td>
+      <td>${clamp0(e.dozens)}</td>
+      <td>${clamp0(e.packs18)}</td>
+    `;
     tbody.appendChild(tr);
   }
 
@@ -316,30 +280,45 @@ function renderAll(){
   o0.value = "";
   o0.textContent = "Select an entry…";
   sel.appendChild(o0);
+
   for(const e of sorted){
     const opt = document.createElement("option");
-    opt.value = e.dateISO; // backend delete is by dateISO in your earlier script
-    opt.textContent = `${e.dateISO} — ${e.collector||""} — eggs:${clamp0(e.eggs)}`;
+    opt.value = e.id || e.date || "";
+    opt.textContent = `${e.date||""} — ${e.collectedBy||""} — eggs:${clamp0(e.eggs)}`;
     sel.appendChild(opt);
   }
 
-  // stats rolling windows
+  // stats
   const today = isoToday();
   $("asOf").textContent = "as of " + new Date().toLocaleString();
 
   const w365 = daysWindow(today,365);
-  const w30 = daysWindow(today,30);
-  const w7  = daysWindow(today,7);
+  const w30  = daysWindow(today,30);
+  const w7   = daysWindow(today,7);
 
   let eggs365=0, daysWith=0;
   let rev7=0, rev30=0;
 
+  // Prefer latest saved prices (if present)
+  if(sorted[0]){
+    settings.priceDozen = sorted[0].priceDozen ?? settings.priceDozen;
+    settings.price18 = sorted[0].price18 ?? settings.price18;
+    settings.hens = sorted[0].hens ?? settings.hens;
+    settings.roosters = sorted[0].roosters ?? settings.roosters;
+  }
+
+  // Keep inputs in sync with remembered settings
+  $("hens").value = settings.hens ?? $("hens").value;
+  $("roosters").value = settings.roosters ?? $("roosters").value;
+  $("priceDozen").value = settings.priceDozen ?? $("priceDozen").value;
+  $("price18").value = settings.price18 ?? $("price18").value;
+
   for(const e of entries){
-    if(!e.dateISO) continue;
-    const d = parseISO(String(e.dateISO).slice(0,10));
+    if(!e.date) continue;
+    const d = parseISO(String(e.date).slice(0,10));
     const eggs = clamp0(e.eggs);
-    const dz = clamp0(e.soldDozens);
-    const p18 = clamp0(e.sold18);
+    const dz = clamp0(e.dozens);
+    const p18 = clamp0(e.packs18);
 
     if(inRange(d,w365.start,w365.end)){
       eggs365 += eggs;
@@ -369,18 +348,10 @@ async function syncNow(){
   try{
     setSync("", "syncing…");
     const data = await apiGetAll();
+
     entries = Array.isArray(data.entries) ? data.entries : [];
-    settings = data.settings || settings;
-
-    // fill settings inputs if present
-    if(settings){
-      if($("hens")) $("hens").value = settings.hens ?? $("hens").value;
-      if($("roosters")) $("roosters").value = settings.roosters ?? $("roosters").value;
-      if($("priceDozen")) $("priceDozen").value = settings.priceDozen ?? $("priceDozen").value;
-      if($("price18")) $("price18").value = settings.price18 ?? $("price18").value;
-    }
-
     renderAll();
+
     setSync("ok", "ok");
     setStatus("");
   }catch(err){
@@ -393,27 +364,30 @@ async function saveDay(){
   try{
     setStatus("Saving…");
 
-    // save settings if your backend supports it
-    const nextSettings = {
+    const date = $("dateISO").value || isoToday();
+
+    const entry = {
+      id: date,
+      date: date,
+      collectedBy: $("collector").value || "Dylan",
+
+      eggs: clamp0($("eggs").value),
+      dozens: clamp0($("soldDozens").value),
+      packs18: clamp0($("sold18").value),
+
       hens: clamp0($("hens").value),
       roosters: clamp0($("roosters").value),
       priceDozen: clamp0($("priceDozen").value),
       price18: clamp0($("price18").value),
     };
-    try { await apiPost("setsettings", { settings: nextSettings }); } catch(e){ /* ignore if backend doesn't support */ }
 
-    const entry = {
-      dateISO: $("dateISO").value || isoToday(),
-      collector: $("collector").value || "Dylan",
-      eggs: clamp0($("eggs").value),
-      soldDozens: clamp0($("soldDozens").value),
-      sold18: clamp0($("sold18").value),
-    };
-    await apiPost("upsertentry", { entry });
+    await apiPost("upsert", { entry });
+
     setStatus("Saved ✅");
     $("eggs").value = "";
     $("soldDozens").value = "";
     $("sold18").value = "";
+
     await syncNow();
   }catch(err){
     setStatus("Save failed: " + (err?.message || err));
@@ -421,11 +395,12 @@ async function saveDay(){
 }
 
 async function deleteSelected(){
-  const dateISO = $("deleteSelect").value;
-  if(!dateISO) return alert("Pick an entry first.");
-  if(!confirm("Delete entry for " + dateISO + " ?")) return;
+  const id = $("deleteSelect").value;
+  if(!id) return alert("Pick an entry first.");
+  if(!confirm("Delete entry " + id + " ?")) return;
+
   try{
-    await apiPost("deleteentry", { dateISO });
+    await apiPost("delete", { id });
     await syncNow();
   }catch(err){
     alert("Delete failed: " + (err?.message || err));
@@ -435,6 +410,7 @@ async function deleteSelected(){
 async function wipeAll(){
   const typed = prompt('Type WIPE to delete ALL shared data:', '');
   if(typed !== "WIPE") return;
+
   try{
     await apiPost("wipeall", { confirm:"WIPE" });
     await syncNow();
@@ -450,12 +426,13 @@ $("saveBtn").addEventListener("click", saveDay);
 $("deleteBtn").addEventListener("click", deleteSelected);
 $("wipeBtn").addEventListener("click", wipeAll);
 
-// Auto sync every 20s
+// Auto sync on load + every 20s
 syncNow();
 setInterval(syncNow, 20000);
 </script>
-  <script>
-  // One-time cleanup: remove any old/broken service workers + caches
+
+<script>
+  // Optional cleanup: remove any old/broken service workers + caches
   (async () => {
     try {
       if ("serviceWorker" in navigator) {
@@ -472,5 +449,6 @@ setInterval(syncNow, 20000);
     }
   })();
 </script>
+
 </body>
 </html>
