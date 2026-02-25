@@ -5,724 +5,411 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Egg Count (Shared)</title>
 
-  <link rel="manifest" href="manifest.json">
-  <meta name="theme-color" content="#7c5cff">
-
   <style>
     :root{
-      --bg:#0b1020; --muted:#9fb0d0; --text:#eaf0ff;
-      --brand:#7c5cff; --good:#2dd4bf; --bad:#fb7185;
-      --card:rgba(255,255,255,.06); --card2:rgba(255,255,255,.03);
-      --border:rgba(255,255,255,.10);
+      --bg:#0b1020; --card:#141b2f; --text:#eaf0ff; --muted:#9fb0d9;
+      --accent:#7c5cff; --good:#2dd4bf; --bad:#fb7185; --border:rgba(255,255,255,.12);
     }
-    *{box-sizing:border-box}
-    body{
-      margin:0;
-      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
-      background: radial-gradient(1200px 700px at 20% 0%, #15224a 0%, var(--bg) 55%);
-      color:var(--text);
-    }
-    .wrap{max-width:1100px; margin:0 auto; padding:22px}
-    h1{margin:0 0 8px; font-size:28px}
-    .sub{color:var(--muted); margin:0 0 16px; line-height:1.4}
-    .grid{display:grid; grid-template-columns: 1.15fr 1fr; gap:14px}
-    .card{
-      background: linear-gradient(180deg, var(--card), var(--card2));
-      border:1px solid var(--border);
-      border-radius:16px; padding:16px;
-      box-shadow: 0 14px 30px rgba(0,0,0,.25);
-    }
-    label{display:block; font-size:12px; color:var(--muted); margin:10px 0 6px}
-    input, select{
-      width:100%; padding:10px 12px; border-radius:12px;
-      border:1px solid rgba(255,255,255,.14);
-      background: rgba(0,0,0,.18); color:var(--text);
-      outline:none; appearance:none;
-    }
-    input:focus, select:focus{border-color: rgba(124,92,255,.7); box-shadow:0 0 0 3px rgba(124,92,255,.25)}
-    .row{display:grid; grid-template-columns: 1fr 1fr; gap:10px}
-    .btns{display:flex; gap:10px; flex-wrap:wrap; margin-top:12px}
-    button{
-      border:0; border-radius:12px; padding:10px 12px; cursor:pointer; color:var(--text);
-      background: rgba(124,92,255,.92);
-    }
-    button.secondary{background: rgba(255,255,255,.10)}
-    button.danger{background: rgba(251,113,133,.85)}
-    button:active{transform: translateY(1px)}
-    .divider{height:1px; background: rgba(255,255,255,.10); margin:14px 0}
-    .pill{display:inline-block; padding:2px 8px; border-radius:999px; font-size:12px; border:1px solid rgba(255,255,255,.12); color:var(--muted)}
-    .small{font-size:12px; color:var(--muted)}
-    .topline{display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap}
-    .kpis{display:grid; grid-template-columns: repeat(2, 1fr); gap:10px}
-    .kpi{border:1px solid rgba(255,255,255,.08); border-radius:14px; padding:12px; background: rgba(0,0,0,.12)}
-    .kpi .t{font-size:12px; color:var(--muted); margin-bottom:6px}
-    .kpi .v{font-size:22px; font-weight:700}
-    .kpi .s{font-size:12px; color:var(--muted); margin-top:4px}
-    table{width:100%; border-collapse:collapse; font-size:14px}
-    th, td{padding:10px 8px; border-bottom:1px solid rgba(255,255,255,.08); text-align:left}
-    th{color:var(--muted); font-weight:600}
-    tr:hover td{background: rgba(255,255,255,.03)}
-    .ok{color:var(--good)}
-    .err{color:var(--bad)}
-    .foot{margin-top:12px; color:var(--muted); font-size:12px; line-height:1.4}
+    body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;background:radial-gradient(1200px 700px at 20% 0%, #18224a, var(--bg));color:var(--text)}
+    .wrap{max-width:1100px;margin:0 auto;padding:18px}
+    h1{margin:0 0 6px;font-size:28px}
+    .sub{margin:0 0 14px;color:var(--muted)}
+    .pill{display:inline-block;padding:6px 10px;border-radius:999px;border:1px solid var(--border);font-size:13px;color:var(--muted)}
+    .pill.ok{border-color:rgba(45,212,191,.45);color:var(--good)}
+    .pill.err{border-color:rgba(251,113,133,.45);color:var(--bad)}
+    .grid{display:grid;grid-template-columns:1.05fr .95fr;gap:12px}
+    @media(max-width:900px){.grid{grid-template-columns:1fr}}
+    .card{background:rgba(20,27,47,.78);border:1px solid var(--border);border-radius:18px;padding:14px;backdrop-filter:blur(10px)}
+    label{display:block;margin:10px 0 6px;color:var(--muted);font-size:13px}
+    input,select{width:100%;padding:10px 12px;border-radius:14px;border:1px solid rgba(255,255,255,.14);background:rgba(0,0,0,.18);color:var(--text);outline:none;font-size:16px}
+    .row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    .row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+    button{border:0;border-radius:14px;padding:11px 14px;font-size:16px;color:#fff;cursor:pointer}
+    .primary{background:var(--accent)}
+    .secondary{background:rgba(255,255,255,.12)}
+    .danger{background:rgba(251,113,133,.85)}
+    .btns{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
+    .kpis{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
+    .kpi{background:rgba(0,0,0,.18);border:1px solid rgba(255,255,255,.10);border-radius:16px;padding:12px}
+    .kpi .t{color:var(--muted);font-size:13px}
+    .kpi .v{font-size:26px;margin-top:4px;font-weight:700}
+    table{width:100%;border-collapse:collapse;margin-top:10px}
+    th,td{padding:10px 8px;border-bottom:1px solid rgba(255,255,255,.10);text-align:left}
+    th{color:var(--muted);font-weight:600;font-size:13px}
+    .small{color:var(--muted);font-size:13px;line-height:1.35}
+    .mono{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace}
   </style>
 </head>
-
 <body>
   <div class="wrap">
-    <div class="topline">
+    <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap">
       <div>
         <h1>Egg Count (Shared)</h1>
-        <p class="sub">
-          <div style="position:fixed;bottom:10px;right:10px;background:#000;color:#0f0;padding:8px 10px;border-radius:10px;z-index:99999;font-family:monospace;">
-VERSION: 999
-</div>
-          Shared live log for Dylan / Oma / Ashley. Egg week/month/year are <span class="pill">projected</span> until you have 365 days logged.
-        </p>
+        <p class="sub">Shared log for Dylan / Oma / Ashley. Rolling 365 with projections.</p>
       </div>
-      <div>
-        <div class="pill" id="syncPill">Sync: —</div>
-      </div>
+      <div class="pill" id="syncPill">Sync: —</div>
     </div>
 
     <div class="grid">
-      <!-- Entry -->
       <div class="card">
-        <div class="topline">
-          <div>
-            <div class="small">Daily entry</div>
-            <div style="font-weight:700; font-size:18px;">Add eggs + sales</div>
-          </div>
-          <span class="pill" id="entryCountPill">0 entries</span>
-        </div>
-
-        <div class="divider"></div>
-
-        <div class="row" style="grid-template-columns: 1fr 1fr 1fr 1fr;">
-          <div>
-            <label for="hens">Current hens</label>
-            <input id="hens" type="number" min="0" step="1" />
-          </div>
-          <div>
-            <label for="roosters">Current roosters</label>
-            <input id="roosters" type="number" min="0" step="1" />
-          </div>
-          <div>
-            <label for="priceDozen">Price per dozen ($)</label>
-            <input id="priceDozen" type="number" min="0" step="0.01" />
-          </div>
-          <div>
-            <label for="price18">Price per 18-pack ($)</label>
-            <input id="price18" type="number" min="0" step="0.01" />
-          </div>
-        </div>
-        <div class="small" id="savedNote" style="margin-top:8px;"></div>
-
-        <div class="divider"></div>
+        <h2 style="margin:0 0 6px">Daily entry</h2>
+        <div class="small">Add or update today’s numbers. Delete mistakes below.</div>
 
         <div class="row">
           <div>
-            <label for="date">Date</label>
-            <input id="date" type="date" />
+            <label>Date</label>
+            <input type="date" id="dateISO">
           </div>
           <div>
-            <label for="collector">Collected by</label>
+            <label>Collected by</label>
             <select id="collector">
-              <option value="Dylan">Dylan</option>
-              <option value="Oma">Oma</option>
-              <option value="Ashley">Ashley</option>
+              <option>Dylan</option>
+              <option>Oma</option>
+              <option>Ashley</option>
             </select>
           </div>
         </div>
 
-        <div class="row">
+        <div class="row3">
           <div>
-            <label for="eggs">Eggs collected</label>
-            <input id="eggs" type="number" min="0" step="1" />
+            <label>Eggs collected</label>
+            <input type="number" id="eggs" min="0" step="1" placeholder="0">
           </div>
           <div>
-            <label for="soldDozens">Dozen cartons sold</label>
-            <input id="soldDozens" type="number" min="0" step="0.25" />
+            <label>Dozen cartons sold</label>
+            <input type="number" id="soldDozens" min="0" step="0.25" placeholder="0">
+          </div>
+          <div>
+            <label>18-packs sold</label>
+            <input type="number" id="sold18" min="0" step="1" placeholder="0">
           </div>
         </div>
 
         <div class="row">
           <div>
-            <label for="sold18">18-packs sold</label>
-            <input id="sold18" type="number" min="0" step="1" />
+            <label>Current hens</label>
+            <input type="number" id="hens" min="0" step="1" placeholder="0">
           </div>
-          <div></div>
+          <div>
+            <label>Current roosters</label>
+            <input type="number" id="roosters" min="0" step="1" placeholder="0">
+          </div>
+        </div>
+
+        <div class="row">
+          <div>
+            <label>Price per dozen ($)</label>
+            <input type="number" id="priceDozen" min="0" step="0.01" placeholder="5.00">
+          </div>
+          <div>
+            <label>Price per 18-pack ($)</label>
+            <input type="number" id="price18" min="0" step="0.01" placeholder="0.00">
+          </div>
         </div>
 
         <div class="btns">
-          <button id="addBtn">Add / Update Day</button>
-          <button class="secondary" id="syncBtn" onclick="syncNow()">Sync now</button>
-          <button class="danger" id="wipeBtn">Wipe All Shared Data</button>
+          <button class="primary" id="saveBtn">Add / Update Day</button>
+          <button class="secondary" id="syncBtn">Sync now</button>
+          <button class="danger" id="wipeBtn">Wipe all shared data</button>
         </div>
 
-        <div class="foot">
-          This app syncs to your shared Google Sheet. If a save fails on iPhone, you’ll see an error message.
+        <div class="small" id="status" style="margin-top:10px"></div>
+
+        <hr style="border:0;border-top:1px solid rgba(255,255,255,.10);margin:14px 0">
+
+        <h3 style="margin:0 0 8px">Delete one entry</h3>
+        <div class="row">
+          <div style="grid-column:1/-1">
+            <label>Select entry</label>
+            <select id="deleteSelect"></select>
+          </div>
+        </div>
+        <div class="btns">
+          <button class="danger" id="deleteBtn">Delete selected</button>
+        </div>
+
+        <div class="small" style="margin-top:10px">
+          Tip: open this in Safari and use <b>Share → Add to Home Screen</b>.
         </div>
       </div>
 
-      <!-- Stats -->
       <div class="card">
-        <div class="topline">
-          <div>
-            <div class="small">Stats</div>
-            <div style="font-weight:700; font-size:18px;">Production + sales</div>
-          </div>
-          <span class="pill" id="asOfPill">as of —</span>
-        </div>
-
-        <div class="divider"></div>
+        <h2 style="margin:0 0 6px">Stats</h2>
+        <div class="small" id="asOf">as of —</div>
 
         <div class="kpis">
           <div class="kpi">
-            <div class="t">Total eggs (last 365 days)</div>
+            <div class="t">Total eggs (rolling 365)</div>
             <div class="v" id="eggs365">0</div>
-            <div class="s" id="daysCovered">0 days logged in window</div>
           </div>
-
           <div class="kpi">
-            <div class="t" id="eggsWeekTitle">Projected eggs per week</div>
+            <div class="t">Projected eggs / week</div>
             <div class="v" id="eggsWeek">0</div>
-            <div class="s" id="eggAvgSub">—</div>
           </div>
-
           <div class="kpi">
-            <div class="t" id="eggsMonthTitle">Projected eggs per month</div>
+            <div class="t">Projected eggs / month</div>
             <div class="v" id="eggsMonth">0</div>
-            <div class="s" id="eggsMonthSub">—</div>
           </div>
-
           <div class="kpi">
-            <div class="t" id="eggsYearTitle">Projected eggs per year</div>
+            <div class="t">Projected eggs / year</div>
             <div class="v" id="eggsYear">0</div>
-            <div class="s" id="eggsYearSub">—</div>
           </div>
-
           <div class="kpi">
-            <div class="t">Dozens sold (last 7 days)</div>
-            <div class="v" id="sold7">0</div>
-            <div class="s">Actual sales entered</div>
-          </div>
-
-          <div class="kpi">
-            <div class="t">Revenue from dozens (last 7 days)</div>
+            <div class="t">Revenue (rolling 7 days)</div>
             <div class="v" id="rev7">$0.00</div>
-            <div class="s">Dozens × price</div>
           </div>
-
           <div class="kpi">
-            <div class="t">18-packs sold (last 7 days)</div>
-            <div class="v" id="sold18_7">0</div>
-            <div class="s">Actual sales entered</div>
-          </div>
-
-          <div class="kpi">
-            <div class="t">Revenue from 18-packs (last 7 days)</div>
-            <div class="v" id="rev18_7">$0.00</div>
-            <div class="s">18-packs × price</div>
-          </div>
-
-          <div class="kpi">
-            <div class="t">Dozens sold (last 30 days)</div>
-            <div class="v" id="sold30">0</div>
-            <div class="s">Actual sales entered</div>
-          </div>
-
-          <div class="kpi">
-            <div class="t">Revenue from dozens (last 30 days)</div>
+            <div class="t">Revenue (rolling 30 days)</div>
             <div class="v" id="rev30">$0.00</div>
-            <div class="s">Dozens × price</div>
-          </div>
-
-          <div class="kpi">
-            <div class="t">18-packs sold (last 30 days)</div>
-            <div class="v" id="sold18_30">0</div>
-            <div class="s">Actual sales entered</div>
-          </div>
-
-          <div class="kpi">
-            <div class="t">Revenue from 18-packs (last 30 days)</div>
-            <div class="v" id="rev18_30">$0.00</div>
-            <div class="s">18-packs × price</div>
-          </div>
-
-          <div class="kpi">
-            <div class="t">Dozens sold (last 365 days)</div>
-            <div class="v" id="sold365">0</div>
-            <div class="s">Actual sales entered</div>
-          </div>
-
-          <div class="kpi">
-            <div class="t">Revenue from dozens (last 365 days)</div>
-            <div class="v" id="rev365">$0.00</div>
-            <div class="s" id="rev365Sub">At $0.00 / dozen</div>
-          </div>
-
-          <div class="kpi">
-            <div class="t">18-packs sold (last 365 days)</div>
-            <div class="v" id="sold18_365">0</div>
-            <div class="s">Actual sales entered</div>
-          </div>
-
-          <div class="kpi">
-            <div class="t">Revenue from 18-packs (last 365 days)</div>
-            <div class="v" id="rev18_365">$0.00</div>
-            <div class="s" id="rev18_365Sub">At $0.00 / 18-pack</div>
           </div>
         </div>
 
-        <div class="divider"></div>
-        <div class="small" id="noteBox">—</div>
+        <hr style="border:0;border-top:1px solid rgba(255,255,255,.10);margin:14px 0">
+
+        <h3 style="margin:0 0 8px">Entries (newest first)</h3>
+        <div style="overflow:auto">
+          <table>
+            <thead>
+              <tr>
+                <th>Date</th><th>Collector</th><th>Eggs</th><th>Dozens</th><th>18</th>
+              </tr>
+            </thead>
+            <tbody id="tbody"></tbody>
+          </table>
+        </div>
       </div>
     </div>
 
-    <!-- Table -->
-    <div class="card" style="margin-top:14px;">
-      <div class="topline">
-        <div>
-          <div class="small">Shared log</div>
-          <div style="font-weight:700; font-size:18px;">Entries</div>
-        </div>
-        <span class="pill">Most recent first</span>
-      </div>
-      <div class="divider"></div>
-      <div style="overflow:auto;">
-        <table>
-          <thead>
-            <tr>
-              <th style="min-width:140px;">Date</th>
-              <th style="min-width:140px;">Collector</th>
-              <th style="min-width:120px;">Eggs</th>
-              <th style="min-width:160px;">Dozens sold</th>
-              <th style="min-width:170px;">18-packs sold</th>
-              <th style="min-width:140px;">In rolling 365?</th>
-              <th style="min-width:120px;">Actions</th>
-            </tr>
-          </thead>
-          <tbody id="tbody"></tbody>
-        </table>
-      </div>
-      <div class="foot">
-        Tip: Use “Sync now” if you want to pull changes immediately instead of waiting for auto-sync.
-      </div>
+    <div class="small mono" style="margin-top:12px">
+      VERSION: 9001
     </div>
   </div>
 
 <script>
-(() => {
-  alert("Loaded NEW version ✅");
+/*** ✅ YOUR BACKEND HERE ***/
+const API_URL = "https://script.google.com/macros/s/AKfycbxzmtRyFULnjQaHJXf7sxXGgGjVR06-xOKnH7khFCWEeFned8pj_aqioj0dGA3RM-sC/exec";
+const API_KEY = "DylanEggsFamily-9482";
 
-  window.onerror = function (msg, src, line, col) {
-  alert("JS error:\n" + msg + "\nLine: " + line + ":" + col);
-};
-  
-  // ✅ PASTE your Apps Script Web App URL and KEY here:
-  const API_URL = "https://script.google.com/macros/s/AKfycbxzmtRyFULnjQaHJXf7sxXGgGjVR06-xOKnH7khFCWEeFned8pj_aqioj0dGA3RM-sC/exec";
-  const API_KEY = "DylanEggsFamily-9482";
+/*** helpers ***/
+const $ = (id) => document.getElementById(id);
+const fmtUSD = (n) => Number(n||0).toLocaleString(undefined,{style:"currency",currency:"USD"});
+const clamp0 = (n) => Math.max(0, Number(n||0));
+function isoToday(){
+  const d = new Date();
+  const tz = d.getTimezoneOffset()*60000;
+  return new Date(d.getTime()-tz).toISOString().slice(0,10);
+}
+function parseISO(iso){
+  const [y,m,dd] = iso.split("-").map(Number);
+  return new Date(Date.UTC(y,m-1,dd));
+}
+function daysWindow(endISO, days){
+  const end = parseISO(endISO);
+  const start = new Date(end.getTime());
+  start.setUTCDate(start.getUTCDate()-(days-1));
+  return {start,end};
+}
+function inRange(d, start, end){
+  const t=d.getTime();
+  return t>=start.getTime() && t<=end.getTime();
+}
 
-  const AUTO_SYNC_MS = 20000;
+/*** UI state ***/
+let entries = [];
+let settings = {hens:0,roosters:0,priceDozen:5,price18:0};
 
-  const els = {
-    hens: document.getElementById("hens"),
-    roosters: document.getElementById("roosters"),
-    priceDozen: document.getElementById("priceDozen"),
-    price18: document.getElementById("price18"),
-    savedNote: document.getElementById("savedNote"),
+function setStatus(msg){ $("status").textContent = msg || ""; }
+function setSync(kind, msg){
+  const pill = $("syncPill");
+  pill.className = "pill" + (kind ? " " + kind : "");
+  pill.textContent = "Sync: " + msg;
+}
 
-    date: document.getElementById("date"),
-    collector: document.getElementById("collector"),
-    eggs: document.getElementById("eggs"),
-    soldDozens: document.getElementById("soldDozens"),
-    sold18: document.getElementById("sold18"),
+/*** API calls ***/
+async function apiGetAll(){
+  const url = `${API_URL}?action=getall&key=${encodeURIComponent(API_KEY)}&t=${Date.now()}`;
+  const res = await fetch(url, { cache:"no-store" });
+  const text = await res.text();
+  let json;
+  try { json = JSON.parse(text); } catch { throw new Error("Non-JSON from server"); }
+  if(!json.ok) throw new Error(json.error || "Server error");
+  return json.data;
+}
 
-    addBtn: document.getElementById("addBtn"),
-    syncBtn: document.getElementById("syncBtn"),
-    wipeBtn: document.getElementById("wipeBtn"),
+async function apiPost(action, payload){
+  const body = { action, key: API_KEY, ...payload };
+  const res = await fetch(API_URL, {
+    method:"POST",
+    mode:"cors",
+    credentials:"omit",
+    headers:{ "Content-Type":"text/plain;charset=utf-8" },
+    body: JSON.stringify(body),
+    cache:"no-store",
+    redirect:"follow",
+  });
+  const text = await res.text();
+  let json;
+  try { json = JSON.parse(text); } catch { throw new Error("Non-JSON from server"); }
+  if(!json.ok) throw new Error(json.error || "Server error");
+  return json;
+}
 
-    syncPill: document.getElementById("syncPill"),
-    entryCountPill: document.getElementById("entryCountPill"),
-    asOfPill: document.getElementById("asOfPill"),
-
-    eggs365: document.getElementById("eggs365"),
-    daysCovered: document.getElementById("daysCovered"),
-    eggsWeekTitle: document.getElementById("eggsWeekTitle"),
-    eggsMonthTitle: document.getElementById("eggsMonthTitle"),
-    eggsYearTitle: document.getElementById("eggsYearTitle"),
-    eggsWeek: document.getElementById("eggsWeek"),
-    eggsMonth: document.getElementById("eggsMonth"),
-    eggsYear: document.getElementById("eggsYear"),
-    eggAvgSub: document.getElementById("eggAvgSub"),
-    eggsMonthSub: document.getElementById("eggsMonthSub"),
-    eggsYearSub: document.getElementById("eggsYearSub"),
-
-    sold7: document.getElementById("sold7"),
-    sold30: document.getElementById("sold30"),
-    sold365: document.getElementById("sold365"),
-    rev7: document.getElementById("rev7"),
-    rev30: document.getElementById("rev30"),
-    rev365: document.getElementById("rev365"),
-    rev365Sub: document.getElementById("rev365Sub"),
-
-    sold18_7: document.getElementById("sold18_7"),
-    sold18_30: document.getElementById("sold18_30"),
-    sold18_365: document.getElementById("sold18_365"),
-    rev18_7: document.getElementById("rev18_7"),
-    rev18_30: document.getElementById("rev18_30"),
-    rev18_365: document.getElementById("rev18_365"),
-    rev18_365Sub: document.getElementById("rev18_365Sub"),
-
-    noteBox: document.getElementById("noteBox"),
-    tbody: document.getElementById("tbody"),
-  };
-
-  let entries = [];
-  let settings = { hens:0, roosters:0, priceDozen:5, price18:0, updatedAt:"" };
-
-  function formatNumber(n) {
-    return new Intl.NumberFormat(undefined, { maximumFractionDigits: 2 }).format(n);
-  }
-  function formatUSD(n) {
-    return Number(n || 0).toLocaleString(undefined, { style:"currency", currency:"USD" });
-  }
-  function isoToday() {
-    const d = new Date();
-    const tzOff = d.getTimezoneOffset() * 60000;
-    return new Date(d.getTime() - tzOff).toISOString().slice(0,10);
-  }
-  function parseISOToUTCDate(iso) {
-    const [y,m,dd] = iso.split("-").map(Number);
-    return new Date(Date.UTC(y, m-1, dd));
-  }
-  function addDaysUTC(dateUTC, days) {
-    const d = new Date(dateUTC.getTime());
-    d.setUTCDate(d.getUTCDate() + days);
-    return d;
-  }
-  function inRangeUTC(dateUTC, startUTC, endUTCInclusive) {
-    return dateUTC.getTime() >= startUTC.getTime() && dateUTC.getTime() <= endUTCInclusive.getTime();
-  }
-  function getWindow(endISO, daysBack) {
-    const endUTC = parseISOToUTCDate(endISO);
-    const startUTC = addDaysUTC(endUTC, -(daysBack - 1));
-    return { startUTC, endUTC };
+/*** render ***/
+function renderAll(){
+  // table
+  const tbody = $("tbody");
+  tbody.innerHTML = "";
+  const sorted = [...entries].sort((a,b)=>String(b.dateISO).localeCompare(String(a.dateISO)));
+  for(const e of sorted){
+    const tr = document.createElement("tr");
+    tr.innerHTML = `<td>${e.dateISO||""}</td><td>${e.collector||""}</td><td>${clamp0(e.eggs)}</td><td>${clamp0(e.soldDozens)}</td><td>${clamp0(e.sold18)}</td>`;
+    tbody.appendChild(tr);
   }
 
-  function setSyncStatus(ok, msg) {
-    els.syncPill.textContent = `Sync: ${msg}`;
-    els.syncPill.className = "pill " + (ok ? "ok" : "err");
+  // delete dropdown
+  const sel = $("deleteSelect");
+  sel.innerHTML = "";
+  const o0 = document.createElement("option");
+  o0.value = "";
+  o0.textContent = "Select an entry…";
+  sel.appendChild(o0);
+  for(const e of sorted){
+    const opt = document.createElement("option");
+    opt.value = e.dateISO; // backend delete is by dateISO in your earlier script
+    opt.textContent = `${e.dateISO} — ${e.collector||""} — eggs:${clamp0(e.eggs)}`;
+    sel.appendChild(opt);
   }
 
-  // iPhone-safe API call (POST JSON + parse text)
-  async function apiPost(action, payload = {}) {
-    const body = { action, key: API_KEY, ...payload };
+  // stats rolling windows
+  const today = isoToday();
+  $("asOf").textContent = "as of " + new Date().toLocaleString();
 
-    const res = await fetch(API_URL, {
-      method: "POST",
-      mode: "cors",
-      credentials: "omit",
-      headers: { "Content-Type": "text/plain;charset=utf-8" },
-      body: JSON.stringify(body),
-      redirect: "follow",
-      cache: "no-store",
-    });
+  const w365 = daysWindow(today,365);
+  const w30 = daysWindow(today,30);
+  const w7  = daysWindow(today,7);
 
-    const text = await res.text();
-    let json;
-    try { json = JSON.parse(text); }
-    catch { throw new Error("Server returned non-JSON (likely a permission/deploy issue)."); }
+  let eggs365=0, daysWith=0;
+  let rev7=0, rev30=0;
 
-    if (!json.ok) throw new Error(json.error || "Server error");
-    return json;
-  }
+  for(const e of entries){
+    if(!e.dateISO) continue;
+    const d = parseISO(String(e.dateISO).slice(0,10));
+    const eggs = clamp0(e.eggs);
+    const dz = clamp0(e.soldDozens);
+    const p18 = clamp0(e.sold18);
 
-  async function apiGetAll() {
-    const url = `${API_URL}?action=getall&key=${encodeURIComponent(API_KEY)}&t=${Date.now()}`;
-    const res = await fetch(url, { method:"GET", cache:"no-store" });
-    const text = await res.text();
-    let json;
-    try { json = JSON.parse(text); }
-    catch { throw new Error("Load returned non-JSON (check API URL/KEY)."); }
-    if (!json.ok) throw new Error(json.error || "Load error");
-    return json.data;
-  }
-
-  function updateSavedNote() {
-    els.savedNote.textContent =
-      `Saved (shared): ${settings.hens} hen(s), ${settings.roosters} rooster(s), ` +
-      `${formatUSD(settings.priceDozen)}/dozen, ${formatUSD(settings.price18)}/18-pack`;
-  }
-
-  function summarize(window) {
-    let eggsTotal = 0, soldDozensTotal = 0, sold18Total = 0, daysWithEntries = 0;
-
-    for (const e of entries) {
-      const dUTC = parseISOToUTCDate(e.dateISO);
-      if (inRangeUTC(dUTC, window.startUTC, window.endUTC)) {
-        eggsTotal += Number(e.eggs || 0);
-        soldDozensTotal += Number(e.soldDozens || 0);
-        sold18Total += Number(e.sold18 || 0);
-        daysWithEntries += 1;
-      }
+    if(inRange(d,w365.start,w365.end)){
+      eggs365 += eggs;
+      daysWith += 1;
     }
-    return { eggsTotal, soldDozensTotal, sold18Total, daysWithEntries };
+    if(inRange(d,w7.start,w7.end)){
+      rev7 += dz * clamp0(settings.priceDozen) + p18 * clamp0(settings.price18);
+    }
+    if(inRange(d,w30.start,w30.end)){
+      rev30 += dz * clamp0(settings.priceDozen) + p18 * clamp0(settings.price18);
+    }
   }
 
-  function render() {
-    const today = isoToday();
-    els.asOfPill.textContent = `as of ${today}`;
-    els.entryCountPill.textContent = `${entries.length} entr${entries.length===1?"y":"ies"}`;
+  const denom = Math.max(1, daysWith);
+  const daily = eggs365 / denom;
 
-    updateSavedNote();
+  $("eggs365").textContent = eggs365.toFixed(0);
+  $("eggsWeek").textContent = (daily*7).toFixed(1);
+  $("eggsMonth").textContent = (daily*30.4).toFixed(1);
+  $("eggsYear").textContent = (daily*365).toFixed(0);
+  $("rev7").textContent = fmtUSD(rev7);
+  $("rev30").textContent = fmtUSD(rev30);
+}
 
-    const w365 = getWindow(today, 365);
-    const w30 = getWindow(today, 30);
-    const w7 = getWindow(today, 7);
-
-    const s365 = summarize(w365);
-    const s30 = summarize(w30);
-    const s7 = summarize(w7);
-
-    const eggs365 = s365.eggsTotal;
-    const loggedDays = s365.daysWithEntries;
-
-    const hasFullYear = loggedDays >= 365;
-    const denomDays = hasFullYear ? 365 : Math.max(1, loggedDays);
-    const dailyEggRate = eggs365 / denomDays;
-
-    const eggsWeek = dailyEggRate * 7;
-    const eggsMonth = dailyEggRate * (365/12);
-    const eggsYear = dailyEggRate * 365;
-
-    els.eggs365.textContent = formatNumber(eggs365);
-    els.daysCovered.textContent = `${loggedDays} days logged in window`;
-
-    els.eggsWeek.textContent = formatNumber(eggsWeek);
-    els.eggsMonth.textContent = formatNumber(eggsMonth);
-    els.eggsYear.textContent = formatNumber(eggsYear);
-
-    if (hasFullYear) {
-      els.eggsWeekTitle.textContent = "Eggs per week (rolling avg)";
-      els.eggsMonthTitle.textContent = "Eggs per month (rolling avg)";
-      els.eggsYearTitle.textContent = "Eggs per year (rolling avg)";
-      els.eggAvgSub.textContent = "Based on last 365 days";
-      els.eggsMonthSub.textContent = "Based on last 365 days";
-      els.eggsYearSub.textContent = "Based on last 365 days";
-      els.noteBox.innerHTML = `You’ve logged <b>365+ days</b> in the rolling window, so egg averages are true rolling averages.`;
-    } else {
-      els.eggsWeekTitle.textContent = "Projected eggs per week";
-      els.eggsMonthTitle.textContent = "Projected eggs per month";
-      els.eggsYearTitle.textContent = "Projected eggs per year";
-      els.eggAvgSub.textContent = `Projection: total ÷ ${denomDays} logged day(s) × 7`;
-      els.eggsMonthSub.textContent = `Projection: total ÷ ${denomDays} logged day(s) × 30.4`;
-      els.eggsYearSub.textContent = `Projection: total ÷ ${denomDays} logged day(s) × 365`;
-      els.noteBox.innerHTML = `Egg week/month/year numbers are <b>projections</b> until you have 365 logged days.`;
-    }
-
-    const priceDz = Number(settings.priceDozen || 0);
-    const price18 = Number(settings.price18 || 0);
-
-    els.sold7.textContent = formatNumber(s7.soldDozensTotal);
-    els.sold30.textContent = formatNumber(s30.soldDozensTotal);
-    els.sold365.textContent = formatNumber(s365.soldDozensTotal);
-    els.rev7.textContent = formatUSD(s7.soldDozensTotal * priceDz);
-    els.rev30.textContent = formatUSD(s30.soldDozensTotal * priceDz);
-    els.rev365.textContent = formatUSD(s365.soldDozensTotal * priceDz);
-    els.rev365Sub.textContent = `At ${formatUSD(priceDz)} / dozen`;
-
-    els.sold18_7.textContent = formatNumber(s7.sold18Total);
-    els.sold18_30.textContent = formatNumber(s30.sold18Total);
-    els.sold18_365.textContent = formatNumber(s365.sold18Total);
-    els.rev18_7.textContent = formatUSD(s7.sold18Total * price18);
-    els.rev18_30.textContent = formatUSD(s30.sold18Total * price18);
-    els.rev18_365.textContent = formatUSD(s365.sold18Total * price18);
-    els.rev18_365Sub.textContent = `At ${formatUSD(price18)} / 18-pack`;
-
-    // Table
-    const rows = [...entries].sort((a,b) => b.dateISO.localeCompare(a.dateISO));
-    els.tbody.innerHTML = "";
-    for (const e of rows) {
-      const dUTC = parseISOToUTCDate(e.dateISO);
-      const in365 = inRangeUTC(dUTC, w365.startUTC, w365.endUTC);
-
-      const tr = document.createElement("tr");
-      tr.innerHTML = `
-        <td>${e.dateISO}</td>
-        <td>${e.collector || "Dylan"}</td>
-        <td>${Number(e.eggs || 0)}</td>
-        <td>${formatNumber(Number(e.soldDozens || 0))}</td>
-        <td>${formatNumber(Number(e.sold18 || 0))}</td>
-        <td>${in365 ? `<span class="pill" style="color:var(--good);border-color:rgba(45,212,191,.35)">Yes</span>` :
-                      `<span class="pill">No</span>`}</td>
-        <td></td>
-      `;
-
-      const tdAct = tr.lastElementChild;
-      const del = document.createElement("button");
-      del.className = "secondary";
-      del.textContent = "Delete";
-      del.onclick = async () => {
-        try {
-          await apiPost("deleteentry", { dateISO: e.dateISO });
-          await syncNow();
-          
-  const ok = confirm(`Delete the entry for ${dateISO}?\n\nThis cannot be undone.`);
-  if(!ok) return;
-
+/*** actions ***/
+async function syncNow(){
   try{
-    await apiPost("deleteEntry", { dateISO });
-    await syncNow();
-  } catch (e){
-    alert("Delete failed: " + (e?.message || e));
+    setSync("", "syncing…");
+    const data = await apiGetAll();
+    entries = Array.isArray(data.entries) ? data.entries : [];
+    settings = data.settings || settings;
+
+    // fill settings inputs if present
+    if(settings){
+      if($("hens")) $("hens").value = settings.hens ?? $("hens").value;
+      if($("roosters")) $("roosters").value = settings.roosters ?? $("roosters").value;
+      if($("priceDozen")) $("priceDozen").value = settings.priceDozen ?? $("priceDozen").value;
+      if($("price18")) $("price18").value = settings.price18 ?? $("price18").value;
+    }
+
+    renderAll();
+    setSync("ok", "ok");
+    setStatus("");
+  }catch(err){
+    setSync("err", "error");
+    setStatus("Sync failed: " + (err?.message || err));
   }
 }
-        } catch (err) {
-          alert("Delete failed:\n" + err.message);
-        }
-      };
-      tdAct.appendChild(del);
 
-      els.tbody.appendChild(tr);
-    }
-  }
+async function saveDay(){
+  try{
+    setStatus("Saving…");
 
-  async function syncNow() {
-    try {
-      setSyncStatus(true, "syncing…");
-      const data = await apiGetAll();
-      entries = Array.isArray(data.entries) ? data.entries : [];
-      settings = data.settings || settings;
-      // 👇 make syncNow available to the HTML button
-window.syncNow = syncNow;
-
-      // normalize settings
-      settings.hens = Number(settings.hens || 0);
-      settings.roosters = Number(settings.roosters || 0);
-      settings.priceDozen = Number(settings.priceDozen || 0);
-      settings.price18 = Number(settings.price18 || 0);
-
-      // normalize entries
-      entries = entries
-        .filter(e => e && typeof e.dateISO === "string")
-        .map(e => ({
-          dateISO: String(e.dateISO).slice(0,10),
-          collector: (e.collector==="Dylan"||e.collector==="Oma"||e.collector==="Ashley") ? e.collector : "Dylan",
-          eggs: Math.max(0, Math.floor(Number(e.eggs || 0))),
-          soldDozens: Math.max(0, Number(e.soldDozens || 0)),
-          sold18: Math.max(0, Math.floor(Number(e.sold18 || 0))),
-        }));
-
-      // Fill settings inputs
-      els.hens.value = String(settings.hens);
-      els.roosters.value = String(settings.roosters);
-      els.priceDozen.value = String(settings.priceDozen.toFixed(2));
-      els.price18.value = String(settings.price18.toFixed(2));
-
-      render();
-      setSyncStatus(true, "ok");
-    } catch (err) {
-      setSyncStatus(false, "error");
-      // show once so people know why saves don’t work
-      console.error(err);
-    }
-  }
-
-  async function pushSettings() {
-    // read from inputs
-    const next = {
-      hens: Math.max(0, Math.floor(Number(els.hens.value || 0))),
-      roosters: Math.max(0, Math.floor(Number(els.roosters.value || 0))),
-      priceDozen: Math.max(0, Number(els.priceDozen.value || 0)),
-      price18: Math.max(0, Number(els.price18.value || 0)),
+    // save settings if your backend supports it
+    const nextSettings = {
+      hens: clamp0($("hens").value),
+      roosters: clamp0($("roosters").value),
+      priceDozen: clamp0($("priceDozen").value),
+      price18: clamp0($("price18").value),
     };
+    try { await apiPost("setsettings", { settings: nextSettings }); } catch(e){ /* ignore if backend doesn't support */ }
 
-    try {
-      await apiPost("setsettings", { settings: next });
-      await syncNow();
-    } catch (err) {
-      alert("Saving settings failed:\n" + err.message);
-    }
-  }
-
-  async function addOrUpdateEntry() {
     const entry = {
-      dateISO: els.date.value || isoToday(),
-      collector: els.collector.value,
-      eggs: Number(els.eggs.value || 0),
-      soldDozens: Number(els.soldDozens.value || 0),
-      sold18: Number(els.sold18.value || 0),
+      dateISO: $("dateISO").value || isoToday(),
+      collector: $("collector").value || "Dylan",
+      eggs: clamp0($("eggs").value),
+      soldDozens: clamp0($("soldDozens").value),
+      sold18: clamp0($("sold18").value),
     };
-
-    try {
-      await apiPost("upsertentry", { entry });
-      // clear inputs (keep date & collector)
-      els.eggs.value = "";
-      els.soldDozens.value = "";
-      els.sold18.value = "";
-      await syncNow();
-      alert("Saved ✅");
-    } catch (err) {
-      alert("Save failed ❌\n\n" + err.message);
-    }
+    await apiPost("upsertentry", { entry });
+    setStatus("Saved ✅");
+    $("eggs").value = "";
+    $("soldDozens").value = "";
+    $("sold18").value = "";
+    await syncNow();
+  }catch(err){
+    setStatus("Save failed: " + (err?.message || err));
   }
+}
 
-  async function wipeAllShared() {
-    const typed = prompt(
-      "This will DELETE ALL shared data for everyone.\n\nType WIPE to confirm.\nAnything else cancels.",
-      ""
-    );
-    if (typed !== "WIPE") return;
-
-    try {
-      await apiPost("wipeall", { confirm: "WIPE" });
-      await syncNow();
-      alert("Wiped ✅");
-    } catch (err) {
-      alert("Wipe failed:\n" + err.message);
-    }
+async function deleteSelected(){
+  const dateISO = $("deleteSelect").value;
+  if(!dateISO) return alert("Pick an entry first.");
+  if(!confirm("Delete entry for " + dateISO + " ?")) return;
+  try{
+    await apiPost("deleteentry", { dateISO });
+    await syncNow();
+  }catch(err){
+    alert("Delete failed: " + (err?.message || err));
   }
+}
 
-  // init
-  els.date.value = isoToday();
-
-  els.addBtn.addEventListener("click", addOrUpdateEntry);
-  els.syncBtn.addEventListener("click", () => {
-  alert("Sync button clicked");
-  syncNow();
-});
-  els.wipeBtn.addEventListener("click", wipeAllShared);
-
-  // settings push (debounced)
-  let t = null;
-  function debouncePush() {
-    clearTimeout(t);
-    t = setTimeout(pushSettings, 600);
+async function wipeAll(){
+  const typed = prompt('Type WIPE to delete ALL shared data:', '');
+  if(typed !== "WIPE") return;
+  try{
+    await apiPost("wipeall", { confirm:"WIPE" });
+    await syncNow();
+  }catch(err){
+    alert("Wipe failed: " + (err?.message || err));
   }
-  els.hens.addEventListener("input", debouncePush);
-  els.roosters.addEventListener("input", debouncePush);
-  els.priceDozen.addEventListener("input", debouncePush);
-  els.price18.addEventListener("input", debouncePush);
+}
 
-  // first sync + auto
-  syncNow();
-  setInterval(syncNow, AUTO_SYNC_MS);
-})();
-</script>
+/*** wire UI ***/
+$("dateISO").value = isoToday();
+$("syncBtn").addEventListener("click", syncNow);
+$("saveBtn").addEventListener("click", saveDay);
+$("deleteBtn").addEventListener("click", deleteSelected);
+$("wipeBtn").addEventListener("click", wipeAll);
 
-<script>
-  // TEMP: disable service worker + unregister old ones (fixes stuck caching on iPhone)
-(async () => {
-  try {
-    if ("serviceWorker" in navigator) {
-      const regs = await navigator.serviceWorker.getRegistrations();
-      for (const r of regs) await r.unregister();
-    }
-  } catch (e) {}
-})();
-  }
+// Auto sync every 20s
+syncNow();
+setInterval(syncNow, 20000);
 </script>
 </body>
 </html>
