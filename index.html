@@ -687,7 +687,10 @@ VERSION: 999
   els.date.value = isoToday();
 
   els.addBtn.addEventListener("click", addOrUpdateEntry);
-  els.syncBtn.addEventListener("click", syncNow);
+  els.syncBtn.addEventListener("click", () => {
+  alert("Sync button clicked");
+  syncNow();
+});
   els.wipeBtn.addEventListener("click", wipeAllShared);
 
   // settings push (debounced)
