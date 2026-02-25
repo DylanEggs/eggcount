@@ -704,9 +704,15 @@
 </script>
 
 <script>
-  // PWA
-  if ("serviceWorker" in navigator) {
-    navigator.serviceWorker.register("./sw.js");
+  // TEMP: disable service worker + unregister old ones (fixes stuck caching on iPhone)
+(async () => {
+  try {
+    if ("serviceWorker" in navigator) {
+      const regs = await navigator.serviceWorker.getRegistrations();
+      for (const r of regs) await r.unregister();
+    }
+  } catch (e) {}
+})();
   }
 </script>
 </body>
