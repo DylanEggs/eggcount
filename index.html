@@ -411,5 +411,23 @@ $("wipeBtn").addEventListener("click", wipeAll);
 syncNow();
 setInterval(syncNow, 20000);
 </script>
+  <script>
+  // One-time cleanup: remove any old/broken service workers + caches
+  (async () => {
+    try {
+      if ("serviceWorker" in navigator) {
+        const regs = await navigator.serviceWorker.getRegistrations();
+        await Promise.all(regs.map(r => r.unregister()));
+      }
+      if (window.caches) {
+        const keys = await caches.keys();
+        await Promise.all(keys.map(k => caches.delete(k)));
+      }
+      console.log("SW + caches cleared");
+    } catch (e) {
+      console.log("Cleanup error", e);
+    }
+  })();
+</script>
 </body>
 </html>
