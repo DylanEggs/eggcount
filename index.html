@@ -7,6 +7,11 @@
   <link rel="manifest" href="/eggcount/manifest.webmanifest">
 
   <style>
+    /* ✅ Fix iPhone input overlap in CSS grids */
+    *, *::before, *::after { box-sizing: border-box; }
+    .row > div, .row3 > div { min-width: 0; }
+    input, select { min-width: 0; }
+
     :root{
       --bg:#0b1020; --card:#141b2f; --text:#eaf0ff; --muted:#9fb0d9;
       --accent:#7c5cff; --good:#2dd4bf; --bad:#fb7185; --border:rgba(255,255,255,.12);
@@ -182,7 +187,7 @@
     </div>
 
     <div class="small mono" style="margin-top:12px">
-      VERSION: 9002
+      VERSION: 9003
     </div>
   </div>
 
